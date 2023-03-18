@@ -1,4 +1,4 @@
-package log;
+package PersikNaYmnichax.log;
 
 public final class Logger
 {

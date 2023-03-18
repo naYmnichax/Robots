@@ -1,4 +1,4 @@
-package gui;
+import PersikNaYmnichax.gui.MainApplicationFrame;
 
 import java.awt.Frame;
 

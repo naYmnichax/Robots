@@ -1,4 +1,4 @@
-package log;
+package PersikNaYmnichax.log;
 
 public enum LogLevel
 {
@@ -9,16 +9,16 @@ public enum LogLevel
     Error(4),
     Fatal(5);
     
-    private int m_iLevel;
+    private int Level;
     
-    private LogLevel(int iLevel)
+    private LogLevel(int Level)
     {
-        m_iLevel = iLevel;
+        this.Level = Level;
     }
     
     public int level()
     {
-        return m_iLevel;
+        return Level;
     }
 }
 
