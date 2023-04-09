@@ -4,7 +4,6 @@ import PersikNaYmnichax.log.Logger;
 
 import java.awt.*;
 import javax.swing.*;
-import java.awt.event.KeyEvent;
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();

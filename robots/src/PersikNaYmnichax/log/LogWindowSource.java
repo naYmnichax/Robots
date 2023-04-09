@@ -3,7 +3,7 @@ package PersikNaYmnichax.log;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class LogWindowSource {
     private final int queueLength;
@@ -14,7 +14,7 @@ public class LogWindowSource {
 
     public LogWindowSource(int iQueueLength) {
         queueLength = iQueueLength;
-        messages = new ConcurrentLinkedQueue<>();
+        messages = new ArrayBlockingQueue<>(iQueueLength);
         listeners = new ArrayList<>();
     }
 
@@ -34,10 +34,14 @@ public class LogWindowSource {
 
     public void append(LogLevel logLevel, String strMessage) {
         LogEntry entry = new LogEntry(logLevel, strMessage);
-        if (messages.size() > queueLength) {
-            messages.peek();
+
+        synchronized(messages) {
+            if (messages.size() > queueLength){
+                messages.peek();
+            }
+            messages.add(entry);
         }
-        messages.add(entry);
+
         LogChangeListener[] activeListeners = activeListener;
         if (activeListeners == null) {
             synchronized (listeners) {
@@ -47,6 +51,7 @@ public class LogWindowSource {
                 }
             }
         }
+        assert activeListeners != null;
         for (LogChangeListener listener : activeListeners) {
             listener.onLogChanged();
         }
