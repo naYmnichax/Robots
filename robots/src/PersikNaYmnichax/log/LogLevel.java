@@ -8,9 +8,9 @@ public enum LogLevel {
     Error(4),
     Fatal(5);
 
-    private int Level;
+    private final int Level;
 
-    private LogLevel(int Level) {
+    LogLevel(int Level) {
         this.Level = Level;
     }
 

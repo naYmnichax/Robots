@@ -17,7 +17,6 @@ import PersikNaYmnichax.logic.MathTransformations;
 import PersikNaYmnichax.logic.RobotMovement;
 
 public class GameVisualizer extends JPanel {
-    private final Timer timer = initTimer();
     private final Robot robot = new Robot();
     private final Target target = new Target();
     private final RobotMovement robotMovement = new RobotMovement();
@@ -27,6 +26,7 @@ public class GameVisualizer extends JPanel {
     }
 
     public GameVisualizer() {
+        Timer timer = initTimer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {

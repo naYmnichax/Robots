@@ -9,11 +9,7 @@ public class MathTransformations {
     }
 
     static double applyLimits(double value, double min, double max) {
-        if (value < min)
-            return min;
-        if (value > max)
-            return max;
-        return value;
+        return Math.max(min, Math.min(value, max));
     }
 
     static double asNormalizedRadians(double angle) {

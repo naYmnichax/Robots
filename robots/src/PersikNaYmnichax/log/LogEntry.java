@@ -1,8 +1,8 @@
 package PersikNaYmnichax.log;
 
 public class LogEntry {
-    private LogLevel logLevel;
-    private String strMessage;
+    private final LogLevel logLevel;
+    private final String strMessage;
 
     public LogEntry(LogLevel logLevel, String strMessage) {
         this.strMessage = strMessage;

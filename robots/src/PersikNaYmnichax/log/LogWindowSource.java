@@ -37,7 +37,7 @@ public class LogWindowSource {
 
         synchronized(messages) {
             if (messages.size() > queueLength){
-                messages.peek();
+                messages.poll();
             }
             messages.add(entry);
         }
