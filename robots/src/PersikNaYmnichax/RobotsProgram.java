@@ -1,3 +1,5 @@
+package PersikNaYmnichax;
+
 import PersikNaYmnichax.gui.MainApplicationFrame;
 
 import java.awt.Frame;

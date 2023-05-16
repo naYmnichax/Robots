@@ -32,6 +32,10 @@ public class LogWindowSource {
         }
     }
 
+    public ArrayList<LogChangeListener> getListeners(){
+        return listeners;
+    }
+
     public void append(LogLevel logLevel, String strMessage) {
         LogEntry entry = new LogEntry(logLevel, strMessage);
 
