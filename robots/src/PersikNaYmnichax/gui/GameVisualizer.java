@@ -14,12 +14,10 @@ import javax.swing.JPanel;
 import PersikNaYmnichax.entities.Robot;
 import PersikNaYmnichax.entities.Target;
 import PersikNaYmnichax.logic.MathTransformations;
-import PersikNaYmnichax.logic.RobotMovement;
 
 public class GameVisualizer extends JPanel {
-    private final Robot robot = new Robot();
-    private final Target target = new Target();
-    private final RobotMovement robotMovement = new RobotMovement();
+    private final Robot robot = new Robot(100, 100);
+    private final Target target = new Target(150, 100);
 
     private static Timer initTimer() {
         return new Timer("events generator", true);
@@ -54,10 +52,12 @@ public class GameVisualizer extends JPanel {
     }
 
     protected void onModelUpdateEvent() {
-        if (!robotMovement.isNeedMove(robot, target)) {
+        double screenWidth = getWidth();
+        double screenHeight = getHeight();
+        if (!robot.isNeedMove(robot, target)) {
             return;
         }
-        robotMovement.moveRobot(robot, target);
+        robot.moveRobot(robot, target, screenWidth, screenHeight);
     }
 
     @Override
