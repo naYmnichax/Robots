@@ -2,12 +2,16 @@ package PersikNaYmnichax.gui;
 
 import PersikNaYmnichax.gui.closingWindows.CloseMainFrame;
 import PersikNaYmnichax.gui.closingWindows.CloseWindow;
+import PersikNaYmnichax.gui.windows.GameWindow;
+import PersikNaYmnichax.gui.windows.LogWindow;
 import PersikNaYmnichax.log.Logger;
 
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -16,7 +20,7 @@ import java.util.ResourceBundle;
 import static PersikNaYmnichax.localization.Language.*;
 import static PersikNaYmnichax.localization.Language.LANG_LOCALE_LANG_RU;
 
-public class MainApplicationFrame extends JFrame {
+public class MainApplicationFrame extends JFrame implements PropertyChangeListener {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
     private final JMenuBar menuBar = new JMenuBar();
@@ -25,12 +29,15 @@ public class MainApplicationFrame extends JFrame {
             LANGUAGE_RU.getAppLang(),
             new Locale(LANG_LOCALE_LANG_RU.getAppLang(), LANG_LOCALE_COUNTRY_RU.getAppLang())
     );
+    private final RestCaller observable = new RestCaller(appLang);
 
-    private final CloseWindow closeWindow = new CloseWindow(appLang);
-    private final CloseMainFrame closeMainFrame = new CloseMainFrame(appLang);
+    private final CloseWindow closeWindow = new CloseWindow(observable);
+    private final CloseMainFrame closeMainFrame = new CloseMainFrame(observable);
 
-    private final GameWindow gameWindow = new GameWindow(appLang, closeWindow);
-    private final LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), appLang, closeWindow);
+
+
+    private final GameWindow gameWindow = new GameWindow(observable, closeWindow);
+    private final LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), observable, closeWindow);
 
     public MainApplicationFrame() {
         int inset = 50;
@@ -50,10 +57,12 @@ public class MainApplicationFrame extends JFrame {
         gameWindow.setSize(400, 400);
         addWindow(gameWindow);
 
+
+
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(closeMainFrame);
-
+        observable.addPropertyChangeListener(this);
     }
 
     protected LogWindow createLogWindow() {
@@ -99,31 +108,34 @@ public class MainApplicationFrame extends JFrame {
                 appLang.getString("language.textDescription"),
                 Arrays.asList(
                         createItem(appLang.getString("language.ru"), (event) -> {
-                                    appLang = ResourceBundle.getBundle(
+                                    observable.changeBundle(
                                             LANGUAGE_RU.getAppLang(),
                                             new Locale(LANG_LOCALE_LANG_RU.getAppLang(),
                                                     LANG_LOCALE_COUNTRY_RU.getAppLang())
                                     );
+                                    appLang = observable.getOldBundle();
                                     updateMenu();
                                     this.invalidate();
                                 }
                         ),
                         createItem(appLang.getString("language.en"), (event)->{
-                                    appLang = ResourceBundle.getBundle(
+                                    observable.changeBundle(
                                             LANGUAGE_EN.getAppLang(),
                                             new Locale(LANG_LOCALE_LANG_EN.getAppLang(),
                                                     LANG_LOCALE_COUNTRY_EN.getAppLang())
                                     );
+                                    appLang = observable.getOldBundle();
                                     updateMenu();
                                     this.invalidate();
                                 }
                         ),
                         createItem(appLang.getString("language.de"), (event)->{
-                            appLang = ResourceBundle.getBundle(
+                            observable.changeBundle(
                                     LANGUAGE_DE.getAppLang(),
                                     new Locale(LANG_LOCALE_LANG_DE.getAppLang(),
                                             LANG_LOCALE_COUNTRY_DE.getAppLang())
                             );
+                            appLang = observable.getOldBundle();
                             updateMenu();
                             this.invalidate();
                         }))
@@ -184,11 +196,13 @@ public class MainApplicationFrame extends JFrame {
     private void updateMenu(){
         menuBar.removeAll();
         setJMenuBar(generateMenuBar());
-        gameWindow.setTitle(appLang.getString("window.Game"));
-        logWindow.setTitle(appLang.getString("window.Log"));
-        closeWindow.setAppLang(appLang);
-        closeMainFrame.setAppLang(appLang);
         revalidate();
         repaint();
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        this.appLang = (ResourceBundle) evt.getNewValue();
+        updateMenu();
     }
 }

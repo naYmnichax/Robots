@@ -1,4 +1,4 @@
-package PersikNaYmnichax.gui;
+package PersikNaYmnichax.gui.windows;
 
 import java.awt.Color;
 import java.awt.EventQueue;

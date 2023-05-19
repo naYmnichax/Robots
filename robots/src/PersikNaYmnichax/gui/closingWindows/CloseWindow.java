@@ -1,16 +1,21 @@
 package PersikNaYmnichax.gui.closingWindows;
 
+import PersikNaYmnichax.gui.RestCaller;
+
 import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ResourceBundle;
 
-public class CloseWindow extends InternalFrameAdapter {
+public class CloseWindow extends InternalFrameAdapter implements PropertyChangeListener {
 
     private ResourceBundle appLang;
 
-    public CloseWindow(ResourceBundle appLang){
-        setAppLang(appLang);
+    public CloseWindow(RestCaller restCaller){
+        restCaller.addPropertyChangeListener(this);
+        setAppLang(restCaller.getOldBundle());
     }
 
     public void setAppLang(ResourceBundle appLang){
@@ -34,5 +39,11 @@ public class CloseWindow extends InternalFrameAdapter {
             event.getInternalFrame().setVisible(false);
             event.getInternalFrame().dispose();
         }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        this.appLang = (ResourceBundle) evt.getNewValue();
+        setAppLang(appLang);
     }
 }
