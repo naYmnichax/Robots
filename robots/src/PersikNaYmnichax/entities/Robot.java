@@ -15,50 +15,54 @@ public class Robot {
         positionY = y;
     }
 
-    private double getAngularVelocity(Robot robot, Target target) {
+    private double getAngularVelocity(Target target) {
         double angleToTarget = MathTransformations.angleTo(
-                robot.positionX, robot.positionY, target.positionX, target.positionY
+                positionX, positionY, target.positionX, target.positionY
         );
-        if (angleToTarget > robot.direction) {
+        if (angleToTarget > direction) {
             return maxAngularVelocity;
         }
-        if (angleToTarget < robot.direction) {
+        if (angleToTarget < direction) {
             return -maxAngularVelocity;
         }
         return 0;
     }
 
-    public void moveRobot(Robot robot, Target target, double width, double height) {
+    public void moveRobot(Target target, int width, int height) {
         double angularVelocity = MathTransformations.applyLimits(
-                getAngularVelocity(robot, target), -maxAngularVelocity, maxAngularVelocity);
-        double newX = robot.positionX + maxVelocity / angularVelocity *
-                (Math.sin(robot.direction + angularVelocity * duration) -
-                        Math.sin(robot.direction));
+                getAngularVelocity(target), -maxAngularVelocity, maxAngularVelocity);
+        double newX = positionX + maxVelocity / angularVelocity *
+                (Math.sin(direction + angularVelocity * duration) -
+                        Math.sin(direction));
         if (!Double.isFinite(newX)) {
-            newX = robot.positionX + maxVelocity * duration * Math.cos(robot.direction);
+            newX = positionX + maxVelocity * duration * Math.cos(direction);
         }
-        double newY = robot.positionY - maxVelocity / angularVelocity *
-                (Math.cos(robot.direction + angularVelocity * duration) -
-                        Math.cos(robot.direction));
+        double newY = positionY - maxVelocity / angularVelocity *
+                (Math.cos(direction + angularVelocity * duration) -
+                        Math.cos(direction));
         if (!Double.isFinite(newY)) {
-            newY = robot.positionY + maxVelocity * duration * Math.sin(robot.direction);
+            newY = positionY + maxVelocity * duration * Math.sin(direction);
         }
+        positionX = MathTransformations.applyLimits(newX, 0, width);
+        positionY = MathTransformations.applyLimits(newY, 0, height);
         double newDirection = MathTransformations.asNormalizedRadians(
-                robot.direction + angularVelocity * duration
+                direction + angularVelocity * duration + bounceAngle(newX, newY)
         );
-
-        robot.positionX = newX;
-        robot.positionY = newY;
-
-        if (newX <= 1 | newY <= 1 | Math.abs(newX - width) <= 1 | Math.abs(newY - height) <= 1) {
-            newDirection = (newDirection - Math.PI) % 2 * Math.PI;
-        }
-        robot.direction = newDirection;
+        direction = newDirection;
     }
 
-    public boolean isNeedMove(Robot robot, Target target) {
+    private double bounceAngle(double robotNewX, double robotNewY) {
+        if (Double.compare(robotNewX, positionX) != 0) {
+            return direction - Math.PI;
+        } else if (Double.compare(robotNewY, positionY) != 0) {
+            return direction - Math.PI / 2;
+        }
+        return 0;
+    }
+
+    public boolean isNeedMove(Target target) {
         double distance = MathTransformations.distance(
-                robot.positionX, robot.positionY, target.positionX, target.positionY);
+                positionX, positionY, target.positionX, target.positionY);
         return (distance >= 0.5);
     }
 }

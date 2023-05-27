@@ -52,12 +52,10 @@ public class GameVisualizer extends JPanel {
     }
 
     protected void onModelUpdateEvent() {
-        double screenWidth = getWidth();
-        double screenHeight = getHeight();
-        if (!robot.isNeedMove(robot, target)) {
+        if (!robot.isNeedMove(target)) {
             return;
         }
-        robot.moveRobot(robot, target, screenWidth, screenHeight);
+        robot.moveRobot(target, this.getSize().width, this.getSize().height);
     }
 
     @Override

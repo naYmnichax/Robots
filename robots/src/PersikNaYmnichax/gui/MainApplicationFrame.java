@@ -31,18 +31,13 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
     );
     private final RestCaller observable = new RestCaller(appLang);
 
+
     private final CloseWindow closeWindow = new CloseWindow(observable);
-    private final CloseMainFrame closeMainFrame = new CloseMainFrame(observable);
-
-
-
-    private final GameWindow gameWindow = new GameWindow(observable, closeWindow);
-    private final LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), observable, closeWindow);
 
     public MainApplicationFrame() {
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(inset, inset,
+        this.setBounds(inset, inset,
                 screenSize.width - inset * 2,
                 screenSize.height - inset * 2
         );
@@ -52,26 +47,30 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-
-        gameWindow.setLocation(400, 10);
-        gameWindow.setSize(400, 400);
+        GameWindow gameWindow = createGameWindow();
         addWindow(gameWindow);
-
-
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        CloseMainFrame closeMainFrame = new CloseMainFrame(observable);
         addWindowListener(closeMainFrame);
         observable.addPropertyChangeListener(this);
     }
 
     protected LogWindow createLogWindow() {
+        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), observable, closeWindow);
         logWindow.setLocation(10, 10);
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
         Logger.debug(appLang.getString("tests.Protocol"));
         return logWindow;
+    }
+
+    protected GameWindow createGameWindow() {
+        GameWindow gameWindow = new GameWindow(observable, closeWindow);
+        gameWindow.setSize(400, 400);
+        return gameWindow;
     }
 
     protected void addWindow(JInternalFrame frame) {
@@ -102,7 +101,7 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
                         })));
     }
 
-    private JMenu languageMenu(){
+    private JMenu languageMenu() {
         return createMenu(
                 appLang.getString("language"),
                 appLang.getString("language.textDescription"),
@@ -118,7 +117,7 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
                                     this.invalidate();
                                 }
                         ),
-                        createItem(appLang.getString("language.en"), (event)->{
+                        createItem(appLang.getString("language.en"), (event) -> {
                                     observable.changeBundle(
                                             LANGUAGE_EN.getAppLang(),
                                             new Locale(LANG_LOCALE_LANG_EN.getAppLang(),
@@ -129,7 +128,7 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
                                     this.invalidate();
                                 }
                         ),
-                        createItem(appLang.getString("language.de"), (event)->{
+                        createItem(appLang.getString("language.de"), (event) -> {
                             observable.changeBundle(
                                     LANGUAGE_DE.getAppLang(),
                                     new Locale(LANG_LOCALE_LANG_DE.getAppLang(),
@@ -139,10 +138,10 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
                             updateMenu();
                             this.invalidate();
                         }))
-                );
+        );
     }
 
-    private JMenu windowClosing(){
+    private JMenu windowClosing() {
         return createMenu(
                 appLang.getString("close"),
                 KeyEvent.VK_T,
@@ -187,13 +186,13 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
 
     private JMenu createMenu(String text, String textDescription, List<JMenuItem> Items) {
         JMenu menu = createMenu(text, KeyEvent.VK_V, textDescription, Items.get(0));
-        for (JMenuItem item: Items) {
+        for (JMenuItem item : Items) {
             menu.add(item);
         }
         return menu;
     }
 
-    private void updateMenu(){
+    private void updateMenu() {
         menuBar.removeAll();
         setJMenuBar(generateMenuBar());
         revalidate();
