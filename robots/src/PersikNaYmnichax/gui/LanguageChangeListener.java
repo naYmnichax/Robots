@@ -5,13 +5,13 @@ import java.beans.PropertyChangeSupport;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class RestCaller{
+public class LanguageChangeListener {
 
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 
     private ResourceBundle oldBundle;
 
-    RestCaller(ResourceBundle appLang){
+    LanguageChangeListener(ResourceBundle appLang){
         oldBundle = appLang;
     }
 

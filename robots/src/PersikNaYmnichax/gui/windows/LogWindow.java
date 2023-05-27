@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.*;
 
-import PersikNaYmnichax.gui.RestCaller;
+import PersikNaYmnichax.gui.LanguageChangeListener;
 import PersikNaYmnichax.gui.closingWindows.CloseWindow;
 import PersikNaYmnichax.log.LogChangeListener;
 import PersikNaYmnichax.log.LogEntry;
@@ -20,10 +20,10 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Prop
     private final TextArea logContent;
     private ResourceBundle appLang;
 
-    public LogWindow(LogWindowSource logSource, RestCaller restCaller, CloseWindow closeWindow) {
-        super(restCaller.getOldBundle().getString("window.Log"), true, true, true, true);
+    public LogWindow(LogWindowSource logSource, LanguageChangeListener languageChangeListener, CloseWindow closeWindow) {
+        super(languageChangeListener.getOldBundle().getString("window.Log"), true, true, true, true);
 
-        restCaller.addPropertyChangeListener(this);
+        languageChangeListener.addPropertyChangeListener(this);
 
         this.logSource = logSource;
         logSource.registerListener(this);

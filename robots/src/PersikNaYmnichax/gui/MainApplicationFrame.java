@@ -29,10 +29,13 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
             LANGUAGE_RU.getAppLang(),
             new Locale(LANG_LOCALE_LANG_RU.getAppLang(), LANG_LOCALE_COUNTRY_RU.getAppLang())
     );
-    private final RestCaller observable = new RestCaller(appLang);
+    private final LanguageChangeListener languageChangeListener = new LanguageChangeListener(appLang);
 
+    private final CloseWindow closeWindow = new CloseWindow(languageChangeListener);
+    private final CloseMainFrame closeMainFrame = new CloseMainFrame(languageChangeListener);
 
-    private final CloseWindow closeWindow = new CloseWindow(observable);
+    private final GameWindow gameWindow = new GameWindow(languageChangeListener, closeWindow);
+    private final LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), languageChangeListener, closeWindow);
 
     public MainApplicationFrame() {
         int inset = 50;
@@ -52,13 +55,13 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        CloseMainFrame closeMainFrame = new CloseMainFrame(observable);
+        CloseMainFrame closeMainFrame = new CloseMainFrame(languageChangeListener);
         addWindowListener(closeMainFrame);
-        observable.addPropertyChangeListener(this);
+        languageChangeListener.addPropertyChangeListener(this);
     }
 
     protected LogWindow createLogWindow() {
-        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), observable, closeWindow);
+        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), languageChangeListener, closeWindow);
         logWindow.setLocation(10, 10);
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
@@ -67,8 +70,9 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
         return logWindow;
     }
 
-    protected GameWindow createGameWindow() {
-        GameWindow gameWindow = new GameWindow(observable, closeWindow);
+
+    protected GameWindow createGameWindow(){
+        gameWindow.setLocation(400, 10);
         gameWindow.setSize(400, 400);
         return gameWindow;
     }
@@ -82,7 +86,7 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
         menuBar.add(lookAndFeelMenu());
         menuBar.add(createTestMenu());
         menuBar.add(languageMenu());
-        menuBar.add(windowClosing());
+        menuBar.add(exitMenu());
         return menuBar;
     }
 
@@ -107,41 +111,41 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
                 appLang.getString("language.textDescription"),
                 Arrays.asList(
                         createItem(appLang.getString("language.ru"), (event) -> {
-                                    observable.changeBundle(
+                                    languageChangeListener.changeBundle(
                                             LANGUAGE_RU.getAppLang(),
                                             new Locale(LANG_LOCALE_LANG_RU.getAppLang(),
                                                     LANG_LOCALE_COUNTRY_RU.getAppLang())
                                     );
-                                    appLang = observable.getOldBundle();
+                                    appLang = languageChangeListener.getOldBundle();
                                     updateMenu();
                                     this.invalidate();
                                 }
                         ),
-                        createItem(appLang.getString("language.en"), (event) -> {
-                                    observable.changeBundle(
+                        createItem(appLang.getString("language.en"), (event)->{
+                                    languageChangeListener.changeBundle(
                                             LANGUAGE_EN.getAppLang(),
                                             new Locale(LANG_LOCALE_LANG_EN.getAppLang(),
                                                     LANG_LOCALE_COUNTRY_EN.getAppLang())
                                     );
-                                    appLang = observable.getOldBundle();
+                                    appLang = languageChangeListener.getOldBundle();
                                     updateMenu();
                                     this.invalidate();
                                 }
                         ),
-                        createItem(appLang.getString("language.de"), (event) -> {
-                            observable.changeBundle(
+                        createItem(appLang.getString("language.de"), (event)->{
+                            languageChangeListener.changeBundle(
                                     LANGUAGE_DE.getAppLang(),
                                     new Locale(LANG_LOCALE_LANG_DE.getAppLang(),
                                             LANG_LOCALE_COUNTRY_DE.getAppLang())
                             );
-                            appLang = observable.getOldBundle();
+                            appLang = languageChangeListener.getOldBundle();
                             updateMenu();
                             this.invalidate();
                         }))
         );
     }
 
-    private JMenu windowClosing() {
+    private JMenu exitMenu(){
         return createMenu(
                 appLang.getString("close"),
                 KeyEvent.VK_T,

@@ -1,6 +1,6 @@
 package PersikNaYmnichax.gui.windows;
 
-import PersikNaYmnichax.gui.RestCaller;
+import PersikNaYmnichax.gui.LanguageChangeListener;
 import PersikNaYmnichax.gui.closingWindows.CloseWindow;
 
 import java.awt.*;
@@ -15,10 +15,11 @@ public class GameWindow extends JInternalFrame implements PropertyChangeListener
 
     private ResourceBundle appLang;
 
-    public GameWindow(RestCaller restCaller, CloseWindow closeWindow) {
-        super(restCaller.getOldBundle().getString("window.Game"), true, true, true, true);
+    public GameWindow(LanguageChangeListener languageChangeListener, CloseWindow closeWindow) {
+        super(languageChangeListener.getOldBundle().getString("window.Game"), true, true, true, true);
 
-        restCaller.addPropertyChangeListener(this);
+        languageChangeListener.addPropertyChangeListener(this);
+
         GameVisualizer visualizer = new GameVisualizer();
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(visualizer, BorderLayout.CENTER);

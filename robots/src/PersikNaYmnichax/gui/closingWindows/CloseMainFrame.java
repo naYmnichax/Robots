@@ -1,6 +1,6 @@
 package PersikNaYmnichax.gui.closingWindows;
 
-import PersikNaYmnichax.gui.RestCaller;
+import PersikNaYmnichax.gui.LanguageChangeListener;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -13,9 +13,9 @@ public class CloseMainFrame extends WindowAdapter implements PropertyChangeListe
 
     private ResourceBundle appLang;
 
-    public CloseMainFrame(RestCaller restCaller){
-        restCaller.addPropertyChangeListener(this);
-        setAppLang(restCaller.getOldBundle());
+    public CloseMainFrame(LanguageChangeListener languageChangeListener){
+        languageChangeListener.addPropertyChangeListener(this);
+        setAppLang(languageChangeListener.getOldBundle());
     }
 
     public void setAppLang(ResourceBundle appLang){
