@@ -1,4 +1,4 @@
-package PersikNaYmnichax.gui;
+package PersikNaYmnichax.localization;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -9,9 +9,11 @@ public class LanguageChangeListener {
 
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 
+    public static String descriptionBundle = "the bundle is outdated";
+
     private ResourceBundle oldBundle;
 
-    LanguageChangeListener(ResourceBundle appLang){
+    public LanguageChangeListener(ResourceBundle appLang){
         oldBundle = appLang;
     }
 
@@ -21,12 +23,12 @@ public class LanguageChangeListener {
 
     public void changeBundle(String lang, Locale locale){
         ResourceBundle newBundle = ResourceBundle.getBundle(lang, locale);
-        String descriptionBundle = "the bundle is outdated";
+
         support.firePropertyChange(descriptionBundle, oldBundle, newBundle);
         oldBundle = newBundle;
     }
 
     public void addPropertyChangeListener(PropertyChangeListener pcl){
-        support.addPropertyChangeListener(pcl);
+        support.addPropertyChangeListener(descriptionBundle,pcl);
     }
 }

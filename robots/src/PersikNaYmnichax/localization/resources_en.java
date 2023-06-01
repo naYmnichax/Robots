@@ -24,14 +24,17 @@ public class resources_en extends ListResourceBundle {
 
                     {"close", "Close"},
                     {"close.exit", "Exit"},
-                    {"close.yes", "Yes"},
-                    {"close.no", "No"},
+                    {"yes", "Yes"},
+                    {"no", "No"},
                     {"close.title", "Confirmation"},
                     {"close.confirmation", "Close the window?"},
                     {"close.textDescription", "Offer to exit the program"},
 
                     {"window.Game", "Playing field"},
-                    {"window.Log", "Work protocol"}
+                    {"window.Log", "Work protocol"},
+
+                    {"downloadSettings.confirmation", "Do you want to restore the last state?"},
+                    {"downloadSettings.title", "Loading Settings"}
             };
 
     @Override

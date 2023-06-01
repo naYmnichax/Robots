@@ -3,27 +3,22 @@ package PersikNaYmnichax.gui.windows;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ResourceBundle;
 
 import javax.swing.*;
 
-import PersikNaYmnichax.gui.LanguageChangeListener;
+import PersikNaYmnichax.localization.LanguageChangeListener;
 import PersikNaYmnichax.gui.closingWindows.CloseWindow;
 import PersikNaYmnichax.log.LogChangeListener;
 import PersikNaYmnichax.log.LogEntry;
 import PersikNaYmnichax.log.LogWindowSource;
+import PersikNaYmnichax.savingPersonalSettings.SettingsChangeListener;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener, PropertyChangeListener {
+public class LogWindow extends GeneralWindowSettings implements LogChangeListener {
     private final LogWindowSource logSource;
     private final TextArea logContent;
-    private ResourceBundle appLang;
 
-    public LogWindow(LogWindowSource logSource, LanguageChangeListener languageChangeListener, CloseWindow closeWindow) {
-        super(languageChangeListener.getOldBundle().getString("window.Log"), true, true, true, true);
-
-        languageChangeListener.addPropertyChangeListener(this);
+    public LogWindow(LogWindowSource logSource, LanguageChangeListener languageChangeListener, SettingsChangeListener settingsChangeListener, CloseWindow closeWindow) {
+        super(languageChangeListener, settingsChangeListener, "window.Log",  closeWindow);
 
         this.logSource = logSource;
         logSource.registerListener(this);
@@ -33,9 +28,6 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Prop
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(logContent, BorderLayout.CENTER);
         getContentPane().add(panel);
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-
-        addInternalFrameListener(closeWindow);
 
         pack();
         updateLogContent();
@@ -50,11 +42,6 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Prop
         logContent.invalidate();
     }
 
-    public void setAppLang(ResourceBundle appLang){
-        this.appLang = appLang;
-        setTitle(this.appLang.getString("window.Game"));
-    }
-
     @Override
     public void doDefaultCloseAction() {
         logSource.unregisterListener(this);
@@ -66,9 +53,5 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Prop
         EventQueue.invokeLater(this::updateLogContent);
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        this.appLang = (ResourceBundle) evt.getNewValue();
-        setAppLang(appLang);
-    }
+
 }

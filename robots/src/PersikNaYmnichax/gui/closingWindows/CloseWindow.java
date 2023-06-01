@@ -1,6 +1,6 @@
 package PersikNaYmnichax.gui.closingWindows;
 
-import PersikNaYmnichax.gui.LanguageChangeListener;
+import PersikNaYmnichax.localization.LanguageChangeListener;
 
 import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
@@ -24,7 +24,7 @@ public class CloseWindow extends InternalFrameAdapter implements PropertyChangeL
 
     @Override
     public void internalFrameClosing(InternalFrameEvent event){
-        Object[] options = {appLang.getString("close.yes"), appLang.getString("close.no")};
+        Object[] options = {appLang.getString("yes"), appLang.getString("no")};
         int n = JOptionPane
                 .showOptionDialog(
                         event.getInternalFrame(),
@@ -43,7 +43,9 @@ public class CloseWindow extends InternalFrameAdapter implements PropertyChangeL
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        this.appLang = (ResourceBundle) evt.getNewValue();
-        setAppLang(appLang);
+        if (evt.getPropertyName().equals(LanguageChangeListener.descriptionBundle)) {
+            this.appLang = (ResourceBundle) evt.getNewValue();
+            setAppLang(appLang);
+        }
     }
 }

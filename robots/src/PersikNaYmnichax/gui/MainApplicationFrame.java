@@ -2,9 +2,12 @@ package PersikNaYmnichax.gui;
 
 import PersikNaYmnichax.gui.closingWindows.CloseMainFrame;
 import PersikNaYmnichax.gui.closingWindows.CloseWindow;
+import PersikNaYmnichax.gui.openingWindows.OpenMainFrame;
 import PersikNaYmnichax.gui.windows.GameWindow;
 import PersikNaYmnichax.gui.windows.LogWindow;
+import PersikNaYmnichax.localization.LanguageChangeListener;
 import PersikNaYmnichax.log.Logger;
+import PersikNaYmnichax.savingPersonalSettings.SettingsChangeListener;
 
 import javax.swing.*;
 
@@ -30,12 +33,14 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
             new Locale(LANG_LOCALE_LANG_RU.getAppLang(), LANG_LOCALE_COUNTRY_RU.getAppLang())
     );
     private final LanguageChangeListener languageChangeListener = new LanguageChangeListener(appLang);
+    private final SettingsChangeListener settingsChangeListener = new SettingsChangeListener(appLang);
 
     private final CloseWindow closeWindow = new CloseWindow(languageChangeListener);
-    private final CloseMainFrame closeMainFrame = new CloseMainFrame(languageChangeListener);
+    private final CloseMainFrame closeMainFrame = new CloseMainFrame(languageChangeListener, settingsChangeListener);
+    private final OpenMainFrame openMainFrame = new OpenMainFrame(languageChangeListener, settingsChangeListener);
 
-    private final GameWindow gameWindow = new GameWindow(languageChangeListener, closeWindow);
-    private final LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), languageChangeListener, closeWindow);
+    private final GameWindow gameWindow = new GameWindow(languageChangeListener, settingsChangeListener,closeWindow);
+    private final LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), languageChangeListener, settingsChangeListener, closeWindow);
 
     public MainApplicationFrame() {
         int inset = 50;
@@ -55,13 +60,13 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        CloseMainFrame closeMainFrame = new CloseMainFrame(languageChangeListener);
         addWindowListener(closeMainFrame);
+        addWindowListener(openMainFrame);
         languageChangeListener.addPropertyChangeListener(this);
+        settingsChangeListener.addPropertyChangeListener(this);
     }
 
     protected LogWindow createLogWindow() {
-        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), languageChangeListener, closeWindow);
         logWindow.setLocation(10, 10);
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
@@ -117,6 +122,7 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
                                                     LANG_LOCALE_COUNTRY_RU.getAppLang())
                                     );
                                     appLang = languageChangeListener.getOldBundle();
+//                                    settingsChangeListener.setAppLang(appLang);
                                     updateMenu();
                                     this.invalidate();
                                 }
@@ -128,6 +134,7 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
                                                     LANG_LOCALE_COUNTRY_EN.getAppLang())
                                     );
                                     appLang = languageChangeListener.getOldBundle();
+//                                    settingsChangeListener.setAppLang(appLang);
                                     updateMenu();
                                     this.invalidate();
                                 }
@@ -139,6 +146,7 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
                                             LANG_LOCALE_COUNTRY_DE.getAppLang())
                             );
                             appLang = languageChangeListener.getOldBundle();
+//                            settingsChangeListener.setAppLang(appLang);
                             updateMenu();
                             this.invalidate();
                         }))
@@ -205,7 +213,10 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        this.appLang = (ResourceBundle) evt.getNewValue();
-        updateMenu();
+        if (evt.getPropertyName().equals(LanguageChangeListener.descriptionBundle)){
+            appLang = (ResourceBundle) evt.getNewValue();
+            settingsChangeListener.setAppLang(appLang);
+            updateMenu();
+        }
     }
 }

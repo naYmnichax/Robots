@@ -22,17 +22,21 @@ public class resources_ru extends ListResourceBundle {
                     {"language.en" , "Английский"},
                     {"language.de", "Немецкий"},
 
+                    {"yes", "Да"},
+                    {"no", "Нет"},
+
                     {"close", "Закрыть"},
                     {"close.exit", "Выйти"},
-                    {"close.yes", "Да"},
-                    {"close.no", "Нет"},
                     {"close.title", "Подтверждение"},
                     {"close.confirmation", "Закрыть окно?"},
                     {"close.textDescription", "Предложение выхода из программы"},
 
 
                     {"window.Game", "Игровое поле"},
-                    {"window.Log", "Протокол работы"}
+                    {"window.Log", "Протокол работы"},
+
+                    {"downloadSettings.confirmation", "Хотите ли вы восстановить последнее состояние?"},
+                    {"downloadSettings.title", "Загрузка настроек"}
             };
 
     @Override

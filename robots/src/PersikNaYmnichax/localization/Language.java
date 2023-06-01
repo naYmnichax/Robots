@@ -8,7 +8,7 @@ public enum Language {
     LANG_LOCALE_COUNTRY_RU("RU"),
     LANGUAGE_EN("PersikNaYmnichax.localization.resources_en"),
     LANG_LOCALE_LANG_EN("en"),
-    LANG_LOCALE_COUNTRY_EN("US"),
+    LANG_LOCALE_COUNTRY_EN("EN"),
     LANGUAGE_DE("PersikNaYmnichax.localization.resources_de"),
     LANG_LOCALE_LANG_DE("de"),
     LANG_LOCALE_COUNTRY_DE("DE");

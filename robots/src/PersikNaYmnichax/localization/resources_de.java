@@ -24,14 +24,17 @@ public class resources_de extends ListResourceBundle {
 
                     {"close", "Schließen"},
                     {"close.exit", "Aussteigen"},
-                    {"close.yes", "Ja"},
-                    {"close.no", "Nein"},
+                    {"yes", "Ja"},
+                    {"no", "Nein"},
                     {"close.title", "Die Bestätigung"},
                     {"close.confirmation", "Fenster schließen?"},
                     {"close.textDescription", "Angebot zum Beenden des Programms"},
 
                     {"window.Game", "Spielfeld"},
-                    {"window.Log", "Arbeits-Protokoll"}
+                    {"window.Log", "Arbeits-Protokoll"},
+
+                    {"downloadSettings.confirmation", "Möchten Sie den letzten Zustand wiederherstellen?"},
+                    {"downloadSettings.title", "Einstellungen laden"}
             };
 
     @Override
