@@ -78,7 +78,7 @@ public class MainApplicationFrame extends JFrame implements PropertyChangeListen
 
     protected GameWindow createGameWindow(){
         gameWindow.setLocation(400, 10);
-        gameWindow.setSize(400, 400);
+        gameWindow.setSize(1024, 768);
         return gameWindow;
     }
 

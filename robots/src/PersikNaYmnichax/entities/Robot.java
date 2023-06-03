@@ -16,9 +16,9 @@ public class Robot {
         positionY = y;
     }
 
-    private double getAngularVelocity(Target target) {
+    private double getAngularVelocity(ManualRobot target) {
         double angleToTarget = MathTransformations.angleTo(
-                positionX, positionY, target.positionX, target.positionY
+                positionX, positionY, target.getTail().x, target.getTail().y
         );
         double newAngle = MathTransformations.asNormalizedRadians(angleToTarget - direction);
         angle = newAngle;
@@ -37,7 +37,7 @@ public class Robot {
         }
     }
 
-    public void moveRobot(Target target, int width, int height) {
+    public void moveRobot(ManualRobot target, int width, int height) {
         double angularVelocity = MathTransformations.applyLimits(
                 getAngularVelocity(target), -maxAngularVelocity, maxAngularVelocity);
         double newDirection = MathTransformations.asNormalizedRadians(

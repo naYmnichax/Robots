@@ -1,6 +1,8 @@
 package PersikNaYmnichax.gui.windows;
 
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -10,13 +12,14 @@ import java.util.TimerTask;
 
 import javax.swing.JPanel;
 
+import PersikNaYmnichax.entities.*;
 import PersikNaYmnichax.entities.Robot;
-import PersikNaYmnichax.entities.Target;
 import PersikNaYmnichax.logic.MathTransformations;
 
 public class GameVisualizer extends JPanel {
     private final Robot robot = new Robot(100, 100);
-    private final Target target = new Target(150, 100);
+    ManualRobot ourRobot = new ManualRobot(0);
+    private final Target target = new Target(400, 150);
 
     private static Timer initTimer() {
         return new Timer("events generator", true);
@@ -36,10 +39,12 @@ public class GameVisualizer extends JPanel {
                 onModelUpdateEvent();
             }
         }, 0, 10);
-        addMouseListener(new MouseAdapter() {
+        setFocusable(true);
+        addKeyListener(new KeyAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                target.setTargetPosition(e.getPoint());
+            public void keyPressed(KeyEvent e) {
+                super.keyPressed(e);
+                ourRobot.changeDirection(e);
                 repaint();
             }
         });
@@ -51,17 +56,21 @@ public class GameVisualizer extends JPanel {
     }
 
     protected void onModelUpdateEvent() {
+        int width = this.getSize().width;
+        int height = this.getSize().height;
         if (!robot.isNeedMove(target)) {
             return;
         }
-        robot.moveRobot(target, this.getSize().width, this.getSize().height);
+        robot.moveRobot(ourRobot, width, height);
+        ourRobot.update(target, width, height);
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
-        drawRobot(g2d);
+        drawRobot(g2d, MathTransformations.round(robot.positionX), MathTransformations.round(robot.positionY), robot.direction);
+        drawOurRobot(g2d, ourRobot);
         drawTarget(g2d);
     }
 
@@ -73,10 +82,8 @@ public class GameVisualizer extends JPanel {
         g.drawOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
     }
 
-    private void drawRobot(Graphics2D g) {
-        int robotCenterX = MathTransformations.round(robot.positionX);
-        int robotCenterY = MathTransformations.round(robot.positionY);
-        AffineTransform t = AffineTransform.getRotateInstance(robot.direction, robotCenterX, robotCenterY);
+    private void drawRobot(Graphics2D g, int robotCenterX, int robotCenterY, double direction) {
+        AffineTransform t = AffineTransform.getRotateInstance(direction, robotCenterX, robotCenterY);
         g.setTransform(t);
         g.setColor(Color.MAGENTA);
         fillOval(g, robotCenterX, robotCenterY, 30, 10);
@@ -86,6 +93,24 @@ public class GameVisualizer extends JPanel {
         fillOval(g, robotCenterX + 10, robotCenterY, 5, 5);
         g.setColor(Color.BLACK);
         drawOval(g, robotCenterX + 10, robotCenterY, 5, 5);
+    }
+    private void drawOurRobot(Graphics2D g, ManualRobot robot) {
+        boolean flagFirstPartBody = true;
+        for (Segment segment: robot.segments) {
+            AffineTransform t = AffineTransform.getRotateInstance(robot.direction, segment.x, segment.y);
+            g.setTransform(t);
+            g.setColor(Color.GREEN);
+            fillOval(g, segment.x, segment.y, 10, 10);
+            g.setColor(Color.BLACK);
+            drawOval(g, segment.x, segment.y, 10, 10);
+            if (flagFirstPartBody) {
+                g.setColor(Color.WHITE);
+                fillOval(g, segment.x + 10, segment.y, 5, 5);
+                g.setColor(Color.BLACK);
+                drawOval(g, segment.x + 10, segment.y, 5, 5);
+                flagFirstPartBody = false;
+            }
+        }
     }
 
     private void drawTarget(Graphics2D g) {
